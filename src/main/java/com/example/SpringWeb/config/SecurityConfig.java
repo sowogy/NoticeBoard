@@ -14,17 +14,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()  // H2 콘솔은 허용
-                        .anyRequest().authenticated()                  // 나머지는 인증 필요
-                )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")     // H2 콘솔은 CSRF 예외 처리
-                )
-                .headers(headers -> headers.frameOptions().disable()
-                )
-                .formLogin(Customizer.withDefaults()); // 기본 로그인 폼 사용
-
+                .csrf(Customizer.withDefaults())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "article/list", "article/content")
+                            .permitAll()
+                        .requestMatchers("/member/**")
+                            .hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/signup")
+                            .permitAll()
+                                .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(form -> form.loginPage("/login")
+                        .defaultSuccessUrl("/")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll());
         return http.build();
     }
 
