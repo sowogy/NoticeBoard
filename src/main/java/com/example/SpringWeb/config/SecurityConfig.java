@@ -16,14 +16,12 @@ public class SecurityConfig {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "article/list", "article/content")
-                            .permitAll()
-                        .requestMatchers("/member/**")
-                            .hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/signup")
-                            .permitAll()
-                                .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
+                        .requestMatchers("/", "/article/list", "/article/list/**","/article/content", "/signup",
+                                "/css/**", "/js/**", "/image/**").permitAll()
+                        .requestMatchers("/member/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
+                )
+                //.httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/")
                         .permitAll())

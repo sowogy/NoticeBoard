@@ -6,7 +6,12 @@ import com.example.SpringWeb.model.Member;
 import com.example.SpringWeb.repository.ArticleRepository;
 import com.example.SpringWeb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +30,9 @@ public class ArticleService {
                 .name(article.getMember().getName())
                 .email(article.getMember().getEmail())
                 .build();
+    }
+
+    public Page<ArticleDTO> findAll(Pageable pageable){
+        return articleRepository.findAll(pageable).map(this::mapTOArticleDTO);
     }
 }

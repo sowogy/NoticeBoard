@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" th:replace="~{default-board::layout(~{::section})}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<body>
+    <section class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>제목</td>
+                    <td style="width: 20%">작성자</td>
+                    <td style="width: 20%">수정날짜</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="article : ${page.content}">
+                    <td th:text="${article.id}">id</td>
+                    <td><a th:text="${article.title}" th:href="@{/article/content(id=${article.id})}">title</a></td>
+                    <td th:text="${article.name}">author</td>
+                    <td th:text="${#calendars.format(article.updated, 'yyyy-MM-dd HH:mm:ss')}">2025-08-13 11:52:56</td>
+                </tr>
+            </tbody>
+        </table>
+        <nav th:if="${!page.isEmpty()}">
+            <ul class="pagination" th:with="start=${T(java.lang.Math).floor(page.number / 5) * 5},
+                last=(${start + 4 < page.totalPages ? start + 4 : page.totalPages - 1})">
+                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/article/list(page=${page.number - 1})}">&laquo</a>
+                </li>
+                <li th:each="pageNumber: ${#numbers.sequence(start, last)}" class="page-item"
+                    th:classappend="${pageNumber == page.number} ? 'active'">
+                    <a class="page-link" th:text="${pageNumber + 1}" th:href="@{/article/list(page=${pageNumber})}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/article/list(page=${page.number + 1})}">&raquo</a>
+                </li>
+            </ul>
+        </nav>
+        <a type="button" class="btn btn-primary" th:href="@{/article/add}" sec:authorize="isAuthenticated()">글쓰기</a>
+    </section>
+</body>
+</html>

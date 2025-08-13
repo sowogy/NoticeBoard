@@ -33,6 +33,6 @@ public class MemberUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return displayName;
     }
 }
