@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+                th:replace="~{default-board::layout(~{::section})}">
+<body>
+    <section class="container">
+        <h1>게시판</h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td style="width: 20%">#</td>
+                    <td th:text="${article.id}">id</td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td th:text="${article.title}">title</td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td style="white-space: pre" th:text="${article.description}">description</td>
+                </tr>
+                <tr>
+                    <td>글쓴이</td>
+                    <td th:text="${article.name}">김동률</td>
+                </tr>
+                <tr>
+                    <td>작성일</td>
+                    <td th:text="${#calendars.format(article.created, 'yyyy-MM-dd HH:mm:ss')}">
+                        2025-08-13 22:38:10
+                    </td>
+                </tr>
+                <tr>
+                    <td>수정일</td>
+                    <td th:text="${#calendars.format(article.updated, 'yyyy-MM-dd HH:mm:ss')}">
+                        2025-08-13 22:38:10
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a type="button" class="btn btn-info btn-sm" th:href="@{/article/list}">목록</a>
+        <th:block sec:authorize="isAuthenticated()"
+            th:if="${#authentication.principal.memberId == article.getMember_id()}">
+        <a type="button" class="btn btn-warning btn-sm"
+           th:href="@{/article/edit(id=${article.id})}">수정</a>
+        <a type="button" class="btn btn-danger btn-sm" th:href="@{/article/delete(id=${article.id})}">삭제</a>
+        </th:block>
+    </section>
+</body>
+</html>

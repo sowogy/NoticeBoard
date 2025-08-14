@@ -34,7 +34,7 @@
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false" sec:authentication="principal.getUsername()">김동률</a>
+                       aria-expanded="false" sec:authentication="principal.displayName">김동률</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/password}">비밀번호 변경</a></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">로그아웃</a></li>

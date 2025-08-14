@@ -1,6 +1,7 @@
 package com.example.SpringWeb.service;
 
 import com.example.SpringWeb.dto.ArticleDTO;
+import com.example.SpringWeb.dto.ArticleForm;
 import com.example.SpringWeb.model.Article;
 import com.example.SpringWeb.model.Member;
 import com.example.SpringWeb.repository.ArticleRepository;
@@ -32,7 +33,22 @@ public class ArticleService {
                 .build();
     }
 
+    public ArticleDTO create(Long memberId, ArticleForm articleForm){
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        Article article = Article.builder()
+                .title(articleForm.getTitle())
+                .description(articleForm.getDescription())
+                .member(member)
+                .build();
+        articleRepository.save(article);
+        return mapTOArticleDTO(article);
+    }
+
     public Page<ArticleDTO> findAll(Pageable pageable){
         return articleRepository.findAll(pageable).map(this::mapTOArticleDTO);
+    }
+
+    public ArticleDTO findById(Long id){
+        return articleRepository.findById(id).map(this::mapTOArticleDTO).orElseThrow();
     }
 }

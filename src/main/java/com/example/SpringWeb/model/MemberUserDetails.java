@@ -1,15 +1,18 @@
 package com.example.SpringWeb.model;
 
 import lombok.Data;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
 @Data
 public class MemberUserDetails implements UserDetails {
-    private String name;
-    private String passwd;
+    private String username;
+    private String password;
     private List<SimpleGrantedAuthority> authorities;
 
     //Extra
@@ -17,9 +20,9 @@ public class MemberUserDetails implements UserDetails {
     private Long memberId;
 
     public MemberUserDetails(Member member, List<Authority> authorities){
-        this.name = member.getEmail();
+        this.username = member.getEmail();
         this.displayName = member.getName();
-        this.passwd = member.getPasswd();
+        this.password = member.getPasswd();
         this.memberId = member.getId();
         this.authorities = authorities.stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
@@ -28,11 +31,11 @@ public class MemberUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return passwd;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return displayName;
+        return username;
     }
 }
