@@ -65,4 +65,33 @@ public class ArticleController {
         articleService.create(memberUserDetails.getMemberId(), articleForm);
         return "redirect:/article/list";
     }
+
+    @GetMapping("/edit")
+    public String getEdit(@RequestParam("id") Long id,
+                          @ModelAttribute("article") ArticleForm articleForm,
+                          Model model){
+        ArticleDTO articleDTO = articleService.findById(id);
+        articleForm.setId(articleDTO.getId());
+        articleForm.setDescription(articleDTO.getDescription());
+        articleForm.setTitle(articleDTO.getTitle());
+        return "article-edit";
+    }
+
+    @PostMapping("/edit")
+    public String postEdit(@Valid @ModelAttribute("article")
+                               ArticleForm articleForm,
+                           BindingResult bindingResult
+                           ){
+        if(bindingResult.hasErrors()){
+            return "article-edit";
+        }
+        articleService.update(articleForm);
+        return "redirect:/article/content?id=" + articleForm.getId();
+    }
+
+    @GetMapping("/delete")
+    public String getDelete(@RequestParam("id") Long id){
+        articleService.delete(id);
+        return "redirect:/article/list";
+    }
 }

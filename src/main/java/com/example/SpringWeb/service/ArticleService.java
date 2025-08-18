@@ -51,4 +51,17 @@ public class ArticleService {
     public ArticleDTO findById(Long id){
         return articleRepository.findById(id).map(this::mapTOArticleDTO).orElseThrow();
     }
+
+    public ArticleDTO update(ArticleForm articleForm){
+        Article article = articleRepository.findById(articleForm.getId()).orElseThrow();
+        article.setTitle(articleForm.getTitle());
+        article.setDescription(article.getDescription());
+        articleRepository.save(article);
+        return mapTOArticleDTO(article);
+    }
+
+    public void delete(Long id){
+        Article article = articleRepository.findById(id).orElseThrow();
+        articleRepository.delete(article);
+    }
 }

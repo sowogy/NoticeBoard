@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns="http://www.w3.org/1999/xhtml"
+                th:replace="~{default-board::layout(~{::section})}">
+<body>
+    <section class = "container">
+        <h1>게시판</h1>
+        <form th:object="${article}" th:action="@{/article/edit}" method="post">
+            <input type="hidden" name="id" th:value="*{id}"/>
+            <div class="mb-3">
+                <label class="form-label">제목</label>
+                <input type="text" class="form-control" th:field="*{title}">
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+                class="text-danger">Title Error</p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">내용</label>
+                <textarea class="form-control" th:field="*{description}" rows="40"></textarea>
+                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
