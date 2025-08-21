@@ -6,6 +6,7 @@ import com.example.SpringWeb.model.Article;
 import com.example.SpringWeb.model.Member;
 import com.example.SpringWeb.repository.ArticleRepository;
 import com.example.SpringWeb.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +55,7 @@ public class MemberService {
         return memberRepository.findAll(pageable).map(this::mapToMemberDTO);
     }
 
-    public MemberDTO fetch(MemberForm memberForm){
+    public MemberDTO patch(MemberForm memberForm){
         Member member = memberRepository.findById(memberForm.getId()).orElseThrow();
 
         if(memberForm.getName() != null){
@@ -70,6 +71,13 @@ public class MemberService {
         }
         memberRepository.save(member);
         return mapToMemberDTO(member);
+    }
+
+    @Transactional
+    public void deleteById(Long id){
+        Member member = memberRepository.findById(id).orElseThrow();
+        articleRepository.deleteAllByMember(member);
+        memberRepository.delete(member);
     }
 
     private MemberDTO mapToMemberDTO(Member member){

@@ -15,5 +15,11 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">내용</label>
-                <textarea class="form-control" th:field="*{description}" rows="40"></textarea>
-                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+                <textarea class="form-control" th:field="*{description}" rows="20"></textarea>
+                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+            </div>
+            <button type="submit" class="btn btn-primary">저장</button>
+        </form>
+    </section>
+</body>
+</html>

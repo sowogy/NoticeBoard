@@ -3,6 +3,7 @@ package com.example.SpringWeb.controller;
 import com.example.SpringWeb.dto.MemberDTO;
 import com.example.SpringWeb.dto.MemberForm;
 import com.example.SpringWeb.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/member")
@@ -37,5 +36,21 @@ public class MemberController {
         memberForm.setName(memberDTO.getName());
         memberForm.setEmail(memberDTO.getEmail());
         return "member-edit";
+    }
+
+    @PostMapping("/edit")
+    public String postMemberEdit(@Valid @ModelAttribute("member")
+                                     MemberForm memberForm, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "/member-edit";
+        }
+        memberService.patch(memberForm);
+        return "redirect:/member/list";
+    }
+
+    @GetMapping("/delete")
+    public String getDelete(@RequestParam("id") Long id){
+        memberService.deleteById(id);
+        return "redirect:/member/list";
     }
 }
