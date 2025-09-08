@@ -32,4 +32,18 @@ public class Article {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    /** 사용자가 붙인 '파일 제목' (게시글 내에서 보일 표시용 제목) */
+    private String fileTitle;
+
+    /** 저장된 파일의 공개 URL (/uploads/...) */
+    private String fileUrl;
+
+    /** 저장 파일명(UUID.ext) — 필요하면 관리자용 조회에 유용 */
+    private String fileStoredName;
+
+    /** MIME 타입 (예: application/pdf) */
+    private String fileContentType;
+
+    /** 파일 크기(byte) */
+    private Long fileSize;
 }

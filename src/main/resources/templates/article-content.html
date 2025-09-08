@@ -1,50 +1,98 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-                xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
-                th:replace="~{default-board::layout(~{::section})}">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{default-board::layout(~{::section})}">
 <body>
-    <section class="container">
-        <h1>게시판</h1>
-        <table class="table">
-            <tbody>
-                <tr>
-                    <td style="width: 20%">#</td>
-                    <td th:text="${article.id}">id</td>
-                </tr>
-                <tr>
-                    <td>제목</td>
-                    <td th:text="${article.title}">title</td>
-                </tr>
-                <tr>
-                    <td>내용</td>
-                    <td style="white-space: pre" th:text="${article.description}">description</td>
-                </tr>
-                <tr>
-                    <td>글쓴이</td>
-                    <td th:text="${article.name}">김동률</td>
-                </tr>
-                <tr>
-                    <td>작성일</td>
-                    <td th:text="${#calendars.format(article.created, 'yyyy-MM-dd HH:mm:ss')}">
-                        2025-08-13 22:38:10
-                    </td>
-                </tr>
-                <tr>
-                    <td>수정일</td>
-                    <td th:text="${#calendars.format(article.updated, 'yyyy-MM-dd HH:mm:ss')}">
-                        2025-08-13 22:38:10
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <a type="button" class="btn btn-info btn-sm" th:href="@{/article/list}">목록</a>
-        <th:block sec:authorize="isAuthenticated()"
-            th:if="${#authentication.principal.memberId == article.getMember_id()}">
+<section class="container">
+    <table class="table">
+        <tbody>
+        <tr>
+            <td style="width: 20%">게시글 번호</td>
+            <td th:text="${article.id}">id</td>
+        </tr>
+        <tr>
+            <td>제목</td>
+            <td th:text="${article.title}">title</td>
+        </tr>
+        <tr>
+            <td>내용</td>
+            <td style="white-space: pre" th:text="${article.description}">description</td>
+        </tr>
+        <tr>
+            <td>글쓴이</td>
+            <td th:text="${article.name}">김동률</td>
+        </tr>
+        <tr>
+            <td>작성일</td>
+            <td th:text="${#calendars.format(article.created, 'yyyy-MM-dd HH:mm:ss')}">
+                2025-08-13 22:38:10
+            </td>
+        </tr>
+        <tr>
+            <td>수정일</td>
+            <td th:text="${#calendars.format(article.updated, 'yyyy-MM-dd HH:mm:ss')}">
+                2025-08-13 22:38:10
+            </td>
+        </tr>
+
+        <!-- 첨부파일 영역 -->
+        <tr th:if="${article.fileUrl}">
+            <td>첨부파일</td>
+            <td>
+                <div>
+                    <strong th:text="${article.fileTitle}">첨부파일</strong>
+                    (<span th:text="${article.fileContentType}">타입</span>,
+                    <span th:text="${#numbers.formatDecimal(article.fileSize/1024.0/1024.0,1,2)}">0.00</span> MB)
+                </div>
+                <div class="mt-2">
+                    <a class="btn btn-outline-primary btn-sm" th:href="${article.fileUrl}" download>다운로드</a>
+                    <a class="btn btn-outline-secondary btn-sm" th:href="${article.fileUrl}" target="_blank">새 창에서 열기</a>
+                </div>
+
+                <!-- PDF인 경우 브라우저 내에서 미리보기 -->
+                <div class="mt-3" th:if="${article.fileContentType != null and article.fileContentType.contains('pdf')}">
+                    <embed th:src="${article.fileUrl}"
+                           type="application/pdf"
+                           width="100%"
+                           height="600px"/>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a type="button" class="btn btn-info btn-sm" th:href="@{/article/list}">목록</a>
+    <th:block sec:authorize="isAuthenticated()"
+              th:if="${#authentication.principal.memberId == article.getMember_id()}">
         <a type="button" class="btn btn-warning btn-sm"
            th:href="@{/article/edit(id=${article.id})}">수정</a>
-        <a type="button" class="btn btn-danger btn-sm" th:href="@{/article/delete(id=${article.id})}">삭제</a>
-        </th:block>
-    </section>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <a type="button" class="btn btn-danger btn-sm"
+           href="javascript:void(0);"
+           th:attr="data-href=@{/article/delete(id=${article.id})}"
+           onclick="confirmDelete(this)">삭제</a>
+        <script>
+            function confirmDelete(el) {
+                const url = el.getAttribute("data-href");
+                Swal.fire({
+                    title: "삭제하시겠습니까?",
+                    text: "이 작업은 되돌릴 수 없습니다!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "삭제",
+                    cancelButtonText: "취소"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            }
+        </script>
+    </th:block>
+</section>
 </body>
 </html>

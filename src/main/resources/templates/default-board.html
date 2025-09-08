@@ -18,10 +18,9 @@
         <a class="navbar-brand d-flex align-items-center gap-2 text-dark text-decoration-none"
            th:href="@{/article/list}">
             <!-- 이미지 크기를 Navbar 높이(56px)와 맞춤 -->
-            <img th:src="@{/image/ks.jpg}" alt="경성 로고"
-                 width="56" height="56"
+            <img th:src="@{/image/image/ks.jpg}" alt="경성 로고"
+                 width="56" height="56  "
                  class="d-inline-block align-text-top rounded">
-            <span class="fs-5 fw-semibold">경성 게시판</span>
         </a>
 
         <!-- 모바일 토글 버튼 -->
@@ -32,6 +31,19 @@
 
         <!-- 메뉴 -->
         <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto"> <!-- 가운데 정렬 위해 ms-auto → mx-auto -->
+                <!-- 추가된 메뉴 -->
+                <li class="nav-item">
+                    <a th:href="@{/intro}" class="nav-link">게시판 소개</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/contact}" class="nav-link">문의사항</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/notice}" class="nav-link">공지사항</a>
+                </li>
+            </ul>
+
             <ul class="navbar-nav ms-auto">
                 <!-- 비회원 -->
                 <li class="nav-item" sec:authorize="isAnonymous()">
@@ -53,7 +65,7 @@
                 <!-- 로그인 사용자 -->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false" sec:authentication="principal.displayName">김동률</a>
+                       aria-expanded="false" sec:authentication="principal.displayName">홍길동</a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" th:href="@{/password}">비밀번호 변경</a></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">로그아웃</a></li>

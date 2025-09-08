@@ -1,25 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-                xmlns="http://www.w3.org/1999/xhtml"
-                th:replace="~{default-board::layout(~{::section})}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      th:replace="~{default-board::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8" />
+    <title>게시판 - 글쓰기</title>
+    <link rel="stylesheet" th:href="@{/css/upload.css}" />
+</head>
 <body>
-    <section class="container">
-        <h1>게시판</h1>
-        <form th:object="${article}" th:action="@{/article/add}" method="post">
-            <div class="mb-3">
-                <label class="form-label">제목</label>
-                <input type="text" class="form-control" th:field="*{title}">
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
-                class="text-danger">Title Error</p>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">내용</label>
-                <textarea class="form-control" th:field="*{description}" rows="10"></textarea>
-                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
-                   class="text-danger">Description Error</p>
-            </div>
-            <button type="submit" class="btn btn-primary">저장</button>
-        </form>
-    </section>
+<section class="container">
+    <h1>게시판</h1>
+
+    <!-- 파일 업로드를 위해 enctype 추가 -->
+    <form th:object="${article}" th:action="@{/article/add}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">제목</label>
+            <input type="text" class="form-control" th:field="*{title}" placeholder="제목을 입력하세요">
+            <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">Title Error</p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">내용</label>
+            <textarea class="form-control" th:field="*{description}" rows="10" placeholder="내용을 입력하세요"></textarea>
+            <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger">Description Error</p>
+        </div>
+
+        <!-- 파일 업로드 영역 -->
+        <div class="mb-3">
+            <label class="form-label">첨부파일 (PPT, PDF, HWP, DOCX)</label>
+
+            <!-- accept: 확장자 화이트리스트 -->
+            <input id="fileInput" name="files" type="file" class="form-control"
+                   th:field="*{file}"
+                   accept=".ppt,.pptx,.pdf,.hwp,.hwpx,.doc,.docx" multiple />
+
+            <small class="text-muted">
+                최대 20MB 파일 1개
+            </small>
+            <p th:if="${#fields.hasErrors('file')}" th:errors="*{file}" class="text-danger">
+                FileErrors
+            </p>
+
+            <!-- 클라이언트 미리보기/검증 메시지 -->
+            <div id="fileList" class="upload-list"></div>
+            <p id="fileError" class="text-danger mt-2" style="display:none;"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">저장</button>
+    </form>
+</section>
+
+<script th:src="@{/js/upload.js}"></script>
 </body>
 </html>

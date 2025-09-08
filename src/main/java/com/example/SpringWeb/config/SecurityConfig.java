@@ -19,6 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.List;
 
+import static org.springframework.web.servlet.function.RequestPredicates.headers;
+
 @Configuration
 public class SecurityConfig {
 
@@ -27,11 +29,13 @@ public class SecurityConfig {
         http
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/article/list", "/article/list/**","/article/content", "/signup",
-                                "/css/**", "/js/**", "/image/**").permitAll()
+                        .requestMatchers("/", "/article/list", "/article/list/**","/article/content", "/article/content/**","/signup",
+                                "/css/**", "/js/**", "/image/**", "/health", "/uploads/**", "/uploads", "/login/kakao"
+                                ,"/oauth2/**", "/callback", "/intro").permitAll()
                         .requestMatchers("/member/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 //.httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/")
@@ -39,7 +43,8 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .permitAll());
+                        .permitAll()
+                );
         return http.build();
     }
 

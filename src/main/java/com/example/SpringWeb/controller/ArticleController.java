@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import com.example.SpringWeb.service.FileStoreService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
 @Slf4j
 public class ArticleController {
     private final ArticleService articleService;
+    private final FileStoreService fileStoreService;
 
     @GetMapping("/list")
     public String getList(@PageableDefault(size = 10, sort="id", direction = Sort.Direction.DESC)
@@ -59,6 +62,11 @@ public class ArticleController {
         if(bindingResult != null && articleForm.getDescription().contains("tlqkf")){
             bindingResult.rejectValue("description", "SlangDetected", "욕설이 탐지되었습니다.");
         }
+        MultipartFile file = articleForm.getFile();
+        // === 파일 크기 20MB 초과 검증 추가 ===
+        if (file != null && !file.isEmpty() && file.getSize() > (20L * 1024 * 1024)) {
+            bindingResult.rejectValue("file", "FileTooLarge", "파일 크기가 20MB를 넘습니다");
+        }
         if(bindingResult.hasErrors()){
             return "article-add";
         }
@@ -74,6 +82,8 @@ public class ArticleController {
         articleForm.setId(articleDTO.getId());
         articleForm.setDescription(articleDTO.getDescription());
         articleForm.setTitle(articleDTO.getTitle());
+
+        model.addAttribute("articleDTO", articleDTO);
         return "article-edit";
     }
 
@@ -82,6 +92,11 @@ public class ArticleController {
                                ArticleForm articleForm,
                            BindingResult bindingResult
                            ){
+        MultipartFile file = articleForm.getFile();
+        // === 파일 크기 20MB 초과 검증 추가 ===
+        if (file != null && !file.isEmpty() && file.getSize() > (20L * 1024 * 1024)) {
+            bindingResult.rejectValue("file", "FileTooLarge", "파일 크기가 20MB를 넘습니다");
+        }
         if(bindingResult.hasErrors()){
             return "article-edit";
         }

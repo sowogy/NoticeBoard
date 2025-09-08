@@ -7,18 +7,28 @@ import com.example.SpringWeb.model.MemberUserDetails;
 import com.example.SpringWeb.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
     private final MemberService memberService;
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String redirect_uri;
 
     @GetMapping
     public String getHome(){
@@ -28,6 +38,17 @@ public class HomeController {
     @GetMapping("/login")
     public String getLogin(){
         return "login";
+    }
+
+    // 카카오 로그인 진입점
+    @GetMapping("/login/kakao")
+    public String kakaoLogin() {
+        String location = "https://kauth.kakao.com/oauth/authorize"
+                + "?response_type=code"
+                + "&client_id=" + clientId
+                + "&redirect_uri=" + URLEncoder.encode(redirect_uri, StandardCharsets.UTF_8);
+
+        return "redirect:" + location;
     }
 
     @GetMapping("/logout")
@@ -81,5 +102,10 @@ public class HomeController {
     @GetMapping("/password")
     public String getPassword(@ModelAttribute("password")PasswordForm passwordForm){
         return "password";
+    }
+
+    @GetMapping("/intro")
+    public String getIntro(){
+        return "intro";
     }
 }

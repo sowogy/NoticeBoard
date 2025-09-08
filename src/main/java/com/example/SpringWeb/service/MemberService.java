@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,10 @@ public class MemberService {
                 .build();
         memberRepository.save(member);
         return mapToMemberDTO(member);
+    }
+
+    public boolean isEmail(String email){
+        return memberRepository.findByEmail(email).isPresent();
     }
 
     public Optional<MemberDTO> findByEmail(String email){
